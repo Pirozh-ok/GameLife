@@ -1,11 +1,13 @@
 package com.company;
 
 public enum Status {
-    NONE, //1
-    BORN, //2
-    LIVE, //1
-    DIED; //2
+    NONE, //0 нет жизни
+    BORN, //1 появилась жизнь
+    LIVE, //2 продолжает жить
+    DIED; //3 погиб
 
+    // 1 шаг. В зависимости от количества окружающих организмов
+    // клетка получает статус рождённой или погибшей
     public Status step1(int around) {
         switch (this) {
             case NONE:
@@ -17,6 +19,8 @@ public enum Status {
         }
     }
 
+    // 2 шаг. Если клетка родилась, присваиваем статус живой и перекаршиваем
+    // Если клетка погибающая, то зануляем её и перекрашиваем в пустоту
     public Status step2() {
         switch (this) {
             case BORN:
@@ -28,6 +32,7 @@ public enum Status {
         }
     }
 
+    // Проверка статуса клетки
     public boolean isLive() {
         return this == LIVE || this == DIED;
     }

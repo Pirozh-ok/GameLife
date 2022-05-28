@@ -7,11 +7,12 @@ import java.net.URL;
 import java.util.Random;
 
 public class Window implements Runnable {
-    JFrame frame;
-    Box[][] boxes;
-    final Random random = new Random();
-    boolean isRand;
+    JFrame frame; // окно
+    Box[][] boxes; //матрица панелей
+    final Random random = new Random(); // генератор случайных чисел
+    boolean isRand; // флаг рандомизации
 
+    // Конструктор, устанавливающий режим игры
     public Window(boolean isRand) {
         this.isRand = isRand;
     }
@@ -23,6 +24,7 @@ public class Window implements Runnable {
         initTimer();
     }
 
+    // Инициализация главного окна
     void initFrame() {
         frame = new JFrame();
         frame.getContentPane().setLayout(null);
@@ -35,9 +37,12 @@ public class Window implements Runnable {
         URL imgURL = Window.class.getResource(path);
         ImageIcon icon = new ImageIcon(imgURL);
         frame.setIconImage(icon.getImage());
+        frame.setResizable(false);
     }
 
+    // Заполняем окно панелями
     void initBoxes() {
+        // Создаём нужное количество панелей
         boxes = new Box[Consts.WIDTH][Consts.HEIGHT];
         for (int x = 0; x < Consts.WIDTH; x++)
             for (int y = 0; y < Consts.HEIGHT; y++) {
@@ -46,17 +51,18 @@ public class Window implements Runnable {
                 frame.add(boxes[x][y]);
             }
 
+        // Проходимся по каждой панели на окне
         for (int x = 0; x < Consts.WIDTH; x++)
             for (int y = 0; y < Consts.HEIGHT; y++) {
                 for (int sx = -1; sx <= 1; sx++)
                     for (int sy = -1; sy <= 1; sy++) {
-                        if (!(sx == 0 && sy == 0))
+                        if (!(sx == 0 && sy == 0)) // В каждую клетку сохраняем список её соседей, для их отслеживания (кроме самой клетки)
                             boxes[x][y].cell.addNear(boxes
                                     [(x + sx + Consts.WIDTH) % Consts.WIDTH]
                                     [(y + sy + Consts.HEIGHT) % Consts.HEIGHT].cell);
                     }
 
-                if (isRand) {
+                if (isRand) { // если режим игры рандомизированный, то случайные панели помечаем живыми организмами
                     if (random.nextInt() % Consts.DENSITY == 0) {
                         boxes[x][y].cell.status = Status.LIVE;
                         boxes[x][y].setColor();
@@ -64,17 +70,18 @@ public class Window implements Runnable {
                 }
             }
     }
-
+    // Инициализируем таймер. Задаём задержку обновления окна и функцию при обновлении
     private void initTimer() {
         TimerListener t1 = new TimerListener();
         Timer timer = new Timer(Consts.SLEEPMS, t1);
         timer.start();
     }
 
+    // Создаём класс для отслеживания тиков таймера
     private class TimerListener implements ActionListener {
         boolean flop = false;
-
         @Override
+        // В два действия производим смену поколения
         public void actionPerformed(ActionEvent e) {
             flop = !flop;
             for (int x = 0; x < Consts.WIDTH; x++)

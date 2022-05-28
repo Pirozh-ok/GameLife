@@ -6,10 +6,10 @@ import java.net.URL;
 
 public class StartWindow implements Runnable {
 
-    JFrame frame;
-    JButton buttonStartRand;
-    JButton buttonStartUser;
-    JLabel label;
+    JFrame frame; // само окно
+    JButton buttonStartRand; // кнопка для рандомизированной игры
+    JButton buttonStartUser; // кнопка для пользовательской игры
+    JLabel label; // заголовок главного окна
 
     @Override
     public void run() {
@@ -18,12 +18,14 @@ public class StartWindow implements Runnable {
         initLabel();
     }
 
+    // Задаём размер и текст заголовка
     private void initLabel() {
         label = new JLabel("Выберите режим игры", SwingConstants.CENTER);
         label.setBounds(50, 25, 300, 50);
         frame.add(label);
     }
 
+    // Задаём местоположение и размер кнопок, их действия при клике
     private void initButton() {
         buttonStartRand = new JButton("Сгенерировать автоматически");
         buttonStartUser = new JButton("Задать вручную");
@@ -34,7 +36,7 @@ public class StartWindow implements Runnable {
         buttonStartUser.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Window window = new Window(false);
+                Window window = new Window(false); // запускаем игру без рандомизированного расположения
                 javax.swing.SwingUtilities.invokeLater(window);
             }
         });
@@ -42,15 +44,17 @@ public class StartWindow implements Runnable {
         buttonStartRand.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Window window = new Window(true);
+                Window window = new Window(true); // генерируем случайное местоположение организмов
                 javax.swing.SwingUtilities.invokeLater(window);
             }
         });
 
         frame.add(buttonStartRand);
         frame.add(buttonStartUser);
+        frame.setResizable(false);
     }
 
+    // Задаём характеристики окна меню
     private void initFrame() {
         frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
